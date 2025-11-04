@@ -1,56 +1,62 @@
-# 📈 Data Visualization Dashboard
+# ♿ Accessibility Auditor
 
-**Turn messy data into beautiful insights—plug in your file and start exploring.**
+Make the web usable for everyone—this tool checks websites for common accessibility issues and offers human-friendly feedback.
 
-This repo contains an interactive data exploration dashboard designed to make analytics accessible and visual. Whether you're analyzing sports data, ML models, or business metrics, this tool helps you see the story behind the numbers.
+## 🚀 Quick Walkthrough
 
-## 🚀 Visual Workflow
+**Step 1: Paste URL/Load Page** → Enter the website URL you want to audit
 
-**Step 1: Upload** → Drop your CSV file or connect to an API endpoint
+**Step 2: Click 'Audit'** → Run the accessibility checks
 
-**Step 2: Select Chart** → Choose from multiple visualization types
-
-**Step 3: Explore Visually** → Filter, interact, and discover insights
+**Step 3: Review What to Fix** → Get clear, actionable results with suggestions
 
 ## ✨ Features
 
-| Feature | Description |
-|---------|-------------|
-| **CSV/API Inputs** | Import data from local files or connect to REST APIs |
-| **Chart Types** | Line, bar, scatter, pie, heatmap, and more |
-| **Filters** | Dynamic filtering and grouping to drill down |
-| **Export Options** | Download charts as PNG or export data reports |
-| **Responsive Design** | Works seamlessly on desktop, tablet, and mobile |
+- **Contrast Checks** – Ensures text is readable against backgrounds
+- **Alt Text Validation** – Verifies images have descriptive alt text
+- **Tab Order Analysis** – Checks keyboard navigation flow
+- **Actionable Suggestions** – Human-friendly recommendations, not just errors
+- **Browser & CLI Modes** – Use it in your browser or integrate into CI/CD pipelines
 
-## 💡 Use Cases
+## 💡 Why I Built This
 
-**Sports analytics, ML model explainability, business data, and more.**
+Accessibility isn't just a compliance checkbox for me—it's personal. I have friends who navigate the web with screen readers and face daily frustrations with inaccessible sites. I built this tool out of empathy, to make it easier for developers to catch common issues before they become barriers. It's about making the web better for everyone, not just meeting minimum standards.
 
-Whether you're tracking player performance metrics, visualizing model predictions and feature importance, analyzing sales trends, or exploring scientific datasets—this dashboard adapts to your needs.
+## 📋 Example Output
 
-## 🛠️ Why I Made This
+Here's what users see in their audit reports:
 
-I spent years wrestling with analytics tools that were either bloated enterprise software or too simplistic to be useful. During a sports analytics project, I needed to quickly visualize player stats and share insights with my team—but every tool I tried had a steep learning curve or required expensive licenses.
+```markdown
+🔴 Critical Issues:
+- Missing alt text on 3 images (including hero image)
+- Low contrast: Button text (#777) on white background (ratio 3.2:1, needs 4.5:1)
 
-That frustration led me to build this: a straightforward dashboard that anyone can run locally, connect their data, and get visual answers in minutes, not hours. No 100-page manuals, no vendor lock-in—just clean, interactive visualizations.
+🟡 Warnings:
+- Skip navigation link missing
+- Form inputs lack associated labels
 
-## 🤝 Community
+🟢 Passed Checks:
+✓ Heading hierarchy is logical
+✓ ARIA landmarks present
+✓ No keyboard traps detected
 
-**Invite community feedback and suggestions!**
+💡 Suggestions:
+- Add alt="" to decorative images
+- Change button text color to #595959 or darker
+- Wrap form inputs with <label> elements
+```
 
-I'd love to hear how you're using this dashboard and what chart types or features would make it more valuable for you. Open an issue to:
-- Suggest new chart types or visualizations
-- Share your use case or success story
-- Report bugs or request features
-- Contribute improvements
+## 🤝 Invite Suggestions
 
-## 🏃 Quick Start
+**What accessibility issues should it check? PRs and ideas welcome!**
 
-1. Clone this repository
-2. Install dependencies (see `/docs` for detailed setup)
-3. Run frontend and backend scripts
-4. Upload your data file and start exploring
+I'd love to hear from you:
+- What accessibility barriers do you encounter most?
+- What features would make this tool more useful?
+- Have ideas for better reporting or integrations?
+
+Open an issue or submit a PR—let's make this tool better together!
 
 ---
 
-**"Seeing is believing—make data visual."**
+**Accessibility isn't extra—it's essential.** ♿
