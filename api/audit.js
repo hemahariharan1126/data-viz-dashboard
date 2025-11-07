@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'URL is required' });
     }
 
-    console.log('🔍 Starting audit for:', url);
+    console.log('🔍 Starting audit for:', url); // Force rebuild
 
     // Launch browser with Vercel-compatible configuration
     browser = await puppeteer.launch({
