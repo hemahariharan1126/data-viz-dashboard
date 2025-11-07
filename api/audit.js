@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT'); 
   res.setHeader(
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'URL is required' });
     }
 
-    console.log('🔍 Starting audit for:', url); // Force rebuild
+    console.log('🔍 Starting audit for:', url); // Force rebuild 
 
     // Launch browser with Vercel-compatible configuration
     browser = await puppeteer.launch({
