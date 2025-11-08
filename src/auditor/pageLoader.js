@@ -6,35 +6,31 @@ async function loadPage(url) {
   
   let browser;
   
-  // Check if running in serverless environment (Vercel)
-  const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
-  
-  if (isServerless) {
+  try {
+    // Launch browser with serverless-compatible settings
     browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
-  } else {
-    // Local development - use regular puppeteer
-    const puppeteerRegular = require('puppeteer');
-    browser = await puppeteerRegular.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    
+    const page = await browser.newPage();
+    
+    await page.goto(url, {
+      waitUntil: 'networkidle2',
+      timeout: 25000  // Reduced timeout for serverless
     });
+    
+    console.log('✅ Page loaded successfully');
+    
+    return { page, browser };
+  } catch (error) {
+    if (browser) await browser.close();
+    console.error('Failed to load page:', error);
+    throw error;
   }
-  
-  const page = await browser.newPage();
-  
-  await page.goto(url, {
-    waitUntil: 'networkidle2',
-    timeout: 30000
-  });
-  
-  console.log('✅ Page loaded successfully');
-  
-  return { page, browser };
 }
 
 module.exports = { loadPage };
+
