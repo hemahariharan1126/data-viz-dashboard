@@ -90,7 +90,7 @@ app.post('/api/report/html', async (req, res) => {
   }
 });
 
-// --- PDF Report Export Route (FIXED) ---
+// --- PDF Report Export Route (FIXED for Serverless) ---
 app.post('/api/report/pdf', async (req, res) => {
   const { url } = req.body;
   const { runFullAudit } = require('../auditor/mainAuditor');
@@ -132,6 +132,33 @@ app.post('/api/report/pdf', async (req, res) => {
         </body>
       </html>
     `;
+    
+    const puppeteerCore = require('puppeteer-core');
+    const chromium = require('@sparticuz/chromium');
+    
+    const browser = await puppeteerCore.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+    
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+    await browser.close();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="accessibility-report.pdf"'
+    });
+    res.send(pdfBuffer);
+  } catch (err) {
+    console.error('PDF Export Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
     // Puppeteer with safe launch flags (needed especially on Linux/Win)
     const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
