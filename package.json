@@ -26,3 +26,9 @@
   "author": "",
   "license": "ISC"
 }
+{
+  "dependencies": {
+    "puppeteer-core": "^21.0.0",
+    "chrome-aws-lambda": "^10.1.0"
+  }
+}
