@@ -13,8 +13,23 @@ async function runFullAudit(url) {
     const { page, browser: br } = await loadPage(url);
     browser = br;
 
-    // Run all checks in parallel
-    console.log('🔄 Running all accessibility checks in parallel...');
+    // Run all checks in parallel with timeout protection
+    console.log('🔄 Running accessibility checks...');
+    
+    const auditPromise = Promise.all([
+      checkContrasts(page).catch(err => { console.error('Contrast check failed:', err); return []; }),
+      validateAltText(page).catch(err => { console.error('Alt text check failed:', err); return []; }),
+      analyzeTabOrder(page).catch(err => { console.error('Tab order check failed:', err); return { issues: [] }; }),
+      validateARIA(page).catch(err => { console.error('ARIA check failed:', err); return []; }),
+      checkHeadingHierarchy(page).catch(err => { console.error('Heading check failed:', err); return []; }),
+      checkFormAccessibility(page).catch(err => { console.error('Form check failed:', err); return []; })
+    ]);
+
+    // Add timeout wrapper
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Audit timeout after 25 seconds')), 25000)
+    );
+
     const [
       contrastIssues,
       altIssues,
@@ -22,18 +37,12 @@ async function runFullAudit(url) {
       ariaIssues,
       headingIssues,
       formIssues
-    ] = await Promise.all([
-      checkContrasts(page),
-      validateAltText(page),
-      analyzeTabOrder(page),
-      validateARIA(page),
-      checkHeadingHierarchy(page),
-      checkFormAccessibility(page)
-    ]);
+    ] = await Promise.race([auditPromise, timeoutPromise]);
+
     console.log(`✅ Audit complete:
       - Contrast issues: ${contrastIssues.length}
       - Alt text issues: ${altIssues.length}
-      - Tab order issues: ${tabIssues.issues.length}
+      - Tab order issues: ${tabIssues.issues?.length || 0}
       - ARIA issues: ${ariaIssues.length}
       - Heading issues: ${headingIssues.length}
       - Form issues: ${formIssues.length}`);
@@ -69,7 +78,7 @@ async function runFullAudit(url) {
         help: issue.html || '',
         nodes: 1,
         details: [issue]
-      })),
+      }))
     ];
 
     const warnings = [
@@ -79,12 +88,12 @@ async function runFullAudit(url) {
         nodes: 1,
         details: [issue]
       })),
-      ...tabIssues.issues.map(issue => ({
+      ...(tabIssues.issues || []).map(issue => ({
         rule: 'tab-order',
         description: 'Tab order issue detected',
         nodes: 1,
         details: [issue]
-      })),
+      }))
     ];
 
     const passed = [{
@@ -116,7 +125,13 @@ async function runFullAudit(url) {
     };
 
   } catch (error) {
-    if (browser) await browser.close();
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.error('Error closing browser:', closeError);
+      }
+    }
     console.error('❌ Audit failed:', error.message);
     throw error;
   }
