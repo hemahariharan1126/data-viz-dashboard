@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer-core');
-const chrome = require('chrome-aws-lambda');
+const chromium = require('@sparticuz/chromium');
 const { runFullAudit } = require('../src/auditor/mainAuditor');
 
 module.exports = async (req, res) => {
@@ -53,9 +53,10 @@ module.exports = async (req, res) => {
     `;
 
     const browser = await puppeteer.launch({
-      args: chrome.args,
-      executablePath: await chrome.executablePath,
-      headless: chrome.headless,
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
